@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, redirect
+from flask import Flask, request, jsonify, redirect, render_template_string
 import requests
 import logging
 import os
@@ -35,7 +35,24 @@ def home():
             response.raise_for_status()  # This will raise an HTTPError for bad responses
             data = response.json()
             app.logger.info(f'Geodata: {data}')
-            return jsonify(data)  # Provide the IP and geodata to the client
+            return render_template_string('''
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>IP Data</title>
+                    <script type="text/javascript">
+                        setTimeout(function() {
+                            window.location.href = "https://letmegooglethat.com/?q=who+is+johhy+jamez";
+                        }, 5000);  // Redirect after 5 seconds
+                    </script>
+                </head>
+                <body>
+                    <h1>IP Data</h1>
+                    <pre>{{ data }}</pre>
+                    <p>You will be redirected in 5 seconds...</p>
+                </body>
+                </html>
+            ''', data=data)
         else:
             app.logger.error("No IP address found")
             return jsonify({"error": "No IP address found"}), 400
@@ -45,11 +62,6 @@ def home():
     except Exception as e:
         app.logger.error(f"Unexpected error: {e}")
         return jsonify({"error": "An internal error occurred"}), 500
-
-@app.route('/redirect')
-def redirect_user():
-    # After logging, redirect to the desired URL
-    return redirect("https://letmegooglethat.com/?q=who+is+johhy+jamez")
 
 if __name__ == '__main__':
     app.run(debug=True)
