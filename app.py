@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, redirect
 import requests
 import logging
 import os
@@ -19,20 +19,23 @@ if 'DYNO' in os.environ:  # Only configure logging when running on Heroku
 else:
     logging.basicConfig(level=logging.INFO)
 
-@app.route('/ipdata', methods=['GET'])
-def get_ipdata():
+@app.route('/')
+def home():
     try:
+        # Determine the client's IP address
         if request.headers.getlist("X-Forwarded-For"):
             ip = request.headers.getlist("X-Forwarded-For")[0]
         else:
             ip = request.remote_addr
         app.logger.info(f'IP requested: {ip}')
+        
         if ip:
+            # Request geodata from ipdata.co API
             response = requests.get(f'https://api.ipdata.co/{ip}?api-key={API_KEY}')
             response.raise_for_status()  # This will raise an HTTPError for bad responses
             data = response.json()
             app.logger.info(f'Geodata: {data}')
-            return jsonify(data)
+            return jsonify(data)  # Provide the IP and geodata to the client
         else:
             app.logger.error("No IP address found")
             return jsonify({"error": "No IP address found"}), 400
@@ -43,8 +46,9 @@ def get_ipdata():
         app.logger.error(f"Unexpected error: {e}")
         return jsonify({"error": "An internal error occurred"}), 500
 
-@app.route('/')
-def home():
+@app.route('/redirect')
+def redirect_user():
+    # After logging, redirect to the desired URL
     return redirect("https://letmegooglethat.com/?q=who+is+johhy+jamez")
 
 if __name__ == '__main__':
