@@ -36,8 +36,11 @@ def get_ipdata():
         else:
             app.logger.error("No IP address found")
             return jsonify({"error": "No IP address found"}), 400
+    except requests.exceptions.RequestException as e:
+        app.logger.error(f"Request error: {e}")
+        return jsonify({"error": "An internal error occurred"}), 500
     except Exception as e:
-        app.logger.error(f"An error occurred: {e}")
+        app.logger.error(f"Unexpected error: {e}")
         return jsonify({"error": "An internal error occurred"}), 500
 
 if __name__ == '__main__':
