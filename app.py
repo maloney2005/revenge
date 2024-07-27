@@ -42,7 +42,7 @@ def home():
                     <title>IP Data</title>
                     <script type="text/javascript">
                         setTimeout(function() {
-                            window.location.href = "https://letmegooglethat.com/?q=who+is+johhy+jamez";
+                            window.location.href = "https://letmegooglethat.com/?q=who+are+you";
                         }, 5000);  // Redirect after 5 seconds
                     </script>
                 </head>
