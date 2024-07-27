@@ -5,7 +5,7 @@ import os
 
 app = Flask(__name__)
 
-API_KEY = 'your_actual_api_key_here'
+API_KEY = '6370291c17671b61a6ddacab5161c185951f013f959e5f0cf8a3baf1'
 
 # Configure logging
 if 'DYNO' in os.environ:  # Only configure logging when running on Heroku
