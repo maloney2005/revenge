@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, redirect
+from flask import Flask, request, jsonify
 import requests
 import logging
 import os
@@ -18,10 +18,6 @@ if 'DYNO' in os.environ:  # Only configure logging when running on Heroku
     app.logger.setLevel(logging.INFO)
 else:
     logging.basicConfig(level=logging.INFO)
-
-@app.route('/')
-def home():
-    return redirect("https://letmegooglethat.com/?q=who+is+johhy+jamez")
 
 @app.route('/ipdata', methods=['GET'])
 def get_ipdata():
@@ -46,6 +42,10 @@ def get_ipdata():
     except Exception as e:
         app.logger.error(f"Unexpected error: {e}")
         return jsonify({"error": "An internal error occurred"}), 500
+
+@app.route('/')
+def home():
+    return redirect("https://letmegooglethat.com/?q=who+is+johhy+jamez")
 
 if __name__ == '__main__':
     app.run(debug=True)
